@@ -9,6 +9,7 @@ public class BugForgeApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BugForgeApplication.class, args);  
+		
 	}
 
 }

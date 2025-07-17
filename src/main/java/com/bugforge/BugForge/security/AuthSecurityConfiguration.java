@@ -38,8 +38,8 @@ public class AuthSecurityConfiguration {
 	    http
 	        .csrf(csrf -> csrf.disable())
 	        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-	        .formLogin(Customizer.withDefaults())
-	        .oauth2Login(Customizer.withDefaults()); 
+	        .formLogin(Customizer.withDefaults());
+	        //.oauth2Login(Customizer.withDefaults()); 
 
 	    return http.build();
 	}

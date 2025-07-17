@@ -1,23 +1,20 @@
 package com.bugforge.BugForge.controller;
 
-import java.security.Principal;
-import java.util.List;
-
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bugforge.BugForge.data.Users;
 import com.bugforge.BugForge.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 
 @RestController
 public class UserController {
@@ -29,14 +26,18 @@ public class UserController {
 		this.userservice = userservice;
 	}
 			
-	
-	
 
+	
+	//Root Page
+	
 	@GetMapping("/")
 	public String hello(Authentication authentication) {
 	    return userservice.HelloUser(authentication);
 	}
-
+	
+	
+	
+	///Get,Add,Remove,Update User
 	
 	
 	@GetMapping("/users")
@@ -50,5 +51,20 @@ public class UserController {
 	public void addAUser(@RequestBody Users user){
 		userservice.addAUser(user);
 	}
+	
+	
+	@DeleteMapping("/users")
+	public void deleteUser(HttpServletRequest request, HttpServletResponse response,
+	                       Authentication authentication) {
+	    userservice.deleteUser(authentication);
+	    new SecurityContextLogoutHandler().logout(request, response, authentication);
+	}
+
+	
+	@PutMapping("/users")
+	public void updateUser(@RequestBody Users user) {
+		userservice.updateUser(user);
+	}
+	
 	
 }

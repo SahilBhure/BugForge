@@ -2,13 +2,16 @@ package com.bugforge.BugForge.service;
 
 import java.util.List;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.bugforge.BugForge.data.Users;
 import com.bugforge.BugForge.data.UsersRepository;
@@ -42,23 +45,43 @@ public class UserService{
 	    }
 	}
 	
-	
 	public List<Users> findAllUsers() {
 		return usersRepository.findAll();
 	}
 	
 	public Users retrieveUser() {
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String mail = authentication.getName(); 
-	    return usersRepository.findByMail(mail)
-	        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + mail));
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String name = authentication.getName(); 
+	    return usersRepository.findByUsername(name)
+	        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + name));
 	}
-	
 	
 	public void addAUser(@Valid Users users) {
 	    String hashedPassword = passwordEncoder.encode(users.getPassword());
 	    users.setPassword(hashedPassword);
 		usersRepository.save(users);
 	}
+
+	public void deleteUser(Authentication authentication) {
+	    if (authentication instanceof UsernamePasswordAuthenticationToken) {
+	    	usersRepository.delete(retrieveUser());
+	    } else if (authentication instanceof OAuth2AuthenticationToken) {
+	        //For OAuth
+	    }
+	}
+
+	public Users updateUser(@RequestBody Users users) {
+	    Users temporaryUser = retrieveUser();
+	    
+	    temporaryUser.setMail(users.getMail());
+	    temporaryUser.setPassword(passwordEncoder.encode(users.getPassword()));
+	    temporaryUser.setUsername(users.getUsername());
+	    
+	    return usersRepository.save(temporaryUser);
+	    
+	}
+
+	
+	
 	
 }
