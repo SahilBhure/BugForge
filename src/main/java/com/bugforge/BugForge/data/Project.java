@@ -1,11 +1,15 @@
 package com.bugforge.BugForge.data;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 public class Project {
@@ -23,9 +27,17 @@ public class Project {
     LocalDate startDate;
     LocalDate endDate;
 
+    @ManyToMany
+    @JoinTable(
+        name = "project_members",
+        joinColumns = @JoinColumn(name = "project_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    List<Users> members;
+    
     public Project() {}
 
-    public Project(int id, String name, String description, Users owner, LocalDate startDate, LocalDate endDate) {
+    public Project(int id, String name, String description, Users owner, LocalDate startDate, LocalDate endDate, List<Users> members) {
         super();
         this.id = id;
         this.name = name;
@@ -33,6 +45,7 @@ public class Project {
         this.owner = owner;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.members = members;
     }
 
     public int getId() { return id; }
@@ -53,9 +66,12 @@ public class Project {
     public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
 
+	public List<Users> getMembers() { return members; }
+	public void setMembers(List<Users> members) { this.members = members; }
+    
     @Override
     public String toString() {
         return "Project [id=" + id + ", name=" + name + ", description=" + description + ", owner=" + owner
-                + ", startDate=" + startDate + ", endDate=" + endDate + "]";
+                + ", startDate=" + startDate + ", endDate=" + endDate + ", members=" + members + "]";
     }
 }
