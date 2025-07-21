@@ -1,6 +1,8 @@
 package com.bugforge.BugForge.data;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -13,9 +15,17 @@ public class Tasks {
     @GeneratedValue
     int id;
     String title;
+    
+    @Enumerated(EnumType.ORDINAL)
     Type type;
+    
+    @Enumerated(EnumType.ORDINAL)
     Status status;
+    
+    
     String description;
+    
+    @Enumerated(EnumType.ORDINAL)
     Priority priority;
 
     @ManyToOne

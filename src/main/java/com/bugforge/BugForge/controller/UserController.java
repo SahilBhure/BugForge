@@ -1,5 +1,7 @@
 package com.bugforge.BugForge.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,19 +43,24 @@ public class UserController {
 	
 	
 	@GetMapping("/users")
-	public Users getAllUsers(){
+	public List<Users> getAllUsers(){
+		return userservice.findAllUsers();
+	}
+	
+	@GetMapping("/user")
+	public Users getUser(){
 		return userservice.retrieveUser();
 	}
 	
 	
-	@PostMapping("/users")
+	@PostMapping("/user")
 	@Transactional
 	public void addAUser(@RequestBody Users user){
 		userservice.addAUser(user);
 	}
 	
 	
-	@DeleteMapping("/users")
+	@DeleteMapping("/user")
 	public void deleteUser(HttpServletRequest request, HttpServletResponse response,
 	                       Authentication authentication) {
 	    userservice.deleteUser(authentication);
@@ -61,7 +68,7 @@ public class UserController {
 	}
 
 	
-	@PutMapping("/users")
+	@PutMapping("/user")
 	public void updateUser(@RequestBody Users user) {
 		userservice.updateUser(user);
 	}

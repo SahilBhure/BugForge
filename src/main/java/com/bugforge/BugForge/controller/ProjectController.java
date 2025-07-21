@@ -27,28 +27,28 @@ public class ProjectController {
 	}
 
 
-	@GetMapping("/users/projects")
+	@GetMapping("/user/projects")
 	public List<Project> retrieveAllUserProjects(){
 		return projectService.retrieveAllUserProjects();
 	}
 	
-	@GetMapping("/users/projects/{id}")
+	@GetMapping("/user/projects/{id}")
 	public Project retrieveProjectById(@PathVariable Integer id){
 		return projectService.retrieveProjectById(id);
 	}
 	
-	@PostMapping("/users/projects")
+	@PostMapping("/user/projects")
 	@Transactional
 	public void addProject(@RequestBody Project project){
 		projectService.addProject(project);
 	}
 	
-	@DeleteMapping("/users/projects/{id}")
+	@DeleteMapping("/user/projects/{id}")
 	public void deleteProjectFromUser(@PathVariable Integer id){
 		projectService.deleteProjectFromUser(id);
 	}
 	
-	@PutMapping("/users/projects/{id}")
+	@PutMapping("/user/projects/{id}")
 	public void updateProjectFromUser(@RequestBody Project project, @PathVariable Integer id){
 		projectService.updateProjectFromUser(project,id);
 	}
