@@ -1,5 +1,9 @@
 package com.bugforge.BugForge.service;
 
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,7 +32,8 @@ public class CustomUserDetailsService implements UserDetailsService{
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getMail())
                 .password(user.getPassword())
-                .roles("USER")
+                .authorities(user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role))
+                		.collect(Collectors.toList()))
                 .build();
     }
 

@@ -1,6 +1,7 @@
 package com.bugforge.BugForge.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -61,6 +62,7 @@ public class UserService{
 	public void addAUser(@Valid Users users) {
 	    String hashedPassword = passwordEncoder.encode(users.getPassword());
 	    users.setPassword(hashedPassword);
+	    users.setRoles(Set.of("ROLE_USER")); 
 		usersRepository.save(users);
 	}
 
