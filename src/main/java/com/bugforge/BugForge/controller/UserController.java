@@ -2,7 +2,11 @@ package com.bugforge.BugForge.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bugforge.BugForge.data.Users;
+import com.bugforge.BugForge.service.JwtService;
 import com.bugforge.BugForge.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +27,13 @@ import jakarta.transaction.Transactional;
 public class UserController {
 	
 	private UserService userservice;
+	
+	@Autowired
+	AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private JwtService jwtService;
+	
 	
 	public UserController(UserService userservice) {
 		super();
@@ -53,11 +65,28 @@ public class UserController {
 	}
 	
 	
-	@PostMapping("/user")
+	@PostMapping("/registeruser")
 	@Transactional
 	public void addAUser(@RequestBody Users user){
 		userservice.addAUser(user);
 	}
+	
+	
+	@PostMapping("/login")
+	public String login(@RequestBody Users user) {
+		
+		Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getMail(), user.getPassword()));
+		
+		if(auth.isAuthenticated()) {
+			  UserDetails userDetails = (UserDetails) auth.getPrincipal();
+		      return jwtService.generateToken(userDetails); 
+		}else {
+			return "Failed";
+		}
+		
+	}
+	
+	
 	
 	
 	@DeleteMapping("/user")

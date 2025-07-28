@@ -50,10 +50,12 @@ public class UserService{
 	}
 	
 	public Users retrieveUser() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String name = authentication.getName(); 
-	    return usersRepository.findByUsername(name)
-	        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + name));
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String userEmail = authentication.getName(); // The principal's name is the email
+
+	    // ✅ THE FIX: Use the repository method that finds a user by their email
+	    return usersRepository.findByMail(userEmail) 
+	           .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
 	}
 	
 	public void addAUser(@Valid Users users) {
