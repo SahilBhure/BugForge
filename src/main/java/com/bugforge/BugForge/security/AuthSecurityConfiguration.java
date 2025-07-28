@@ -32,7 +32,7 @@ public class AuthSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/registeruser", "/login").permitAll()
+                .requestMatchers("/registeruser", "/login","/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
