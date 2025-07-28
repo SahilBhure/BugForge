@@ -2,6 +2,7 @@ package com.bugforge.BugForge.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,8 +27,9 @@ public class ProjectController {
 		this.projectService = projectService;
 	}
 
-
+	
 	@GetMapping("/user/projects")
+	@PreAuthorize("hasRole('ADMIN')")
 	public List<Project> retrieveAllUserProjects(){
 		return projectService.retrieveAllUserProjects();
 	}
