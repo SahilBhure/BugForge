@@ -59,6 +59,12 @@ public class UserService{
 	           .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
 	}
 	
+	public Users getByMail(String mail) {
+	    return usersRepository.findByMail(mail)
+	        .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + mail));
+	}
+
+	
 	public void addAUser(@Valid Users users) {
 	    String hashedPassword = passwordEncoder.encode(users.getPassword());
 	    users.setPassword(hashedPassword);

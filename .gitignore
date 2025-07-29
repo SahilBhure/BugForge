@@ -24,3 +24,5 @@ hs_err_pid*
 replay_pid*
 /target/
 src/main/resources/APIKeys
+src/main/resources/application.properties
+src/main/resources/application.properties

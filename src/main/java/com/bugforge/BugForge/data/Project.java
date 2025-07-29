@@ -1,12 +1,15 @@
 package com.bugforge.BugForge.data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -27,17 +30,29 @@ public class Project {
     LocalDate startDate;
     LocalDate endDate;
 
-    @ManyToMany
-    @JoinTable(
-        name = "project_members",
-        joinColumns = @JoinColumn(name = "project_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    List<Users> members;
+//    @ManyToMany
+//    @JoinTable(
+//        name = "project_members",
+//        joinColumns = @JoinColumn(name = "project_id"),
+//        inverseJoinColumns = @JoinColumn(name = "user_id")
+//    )
+//    List<Users> members;
     
-    public Project() {}
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<ProjectMembership> memberships = new ArrayList<>();
 
-    public Project(int id, String name, String description, Users owner, LocalDate startDate, LocalDate endDate, List<Users> members) {
+    
+    public List<ProjectMembership> getMemberships() {
+		return memberships;
+	}
+
+	public void setMemberships(List<ProjectMembership> memberships) {
+		this.memberships = memberships;
+	}
+
+	public Project() {}
+
+    public Project(int id, String name, String description, Users owner, LocalDate startDate, LocalDate endDate) {
         super();
         this.id = id;
         this.name = name;
@@ -45,7 +60,7 @@ public class Project {
         this.owner = owner;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.members = members;
+        //this.members = members;
     }
 
     public int getId() { return id; }
@@ -66,12 +81,8 @@ public class Project {
     public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
 
-	public List<Users> getMembers() { return members; }
-	public void setMembers(List<Users> members) { this.members = members; }
+//	public List<Users> getMembers() { return members; }
+//	public void setMembers(List<Users> members) { this.members = members; }
     
-    @Override
-    public String toString() {
-        return "Project [id=" + id + ", name=" + name + ", description=" + description + ", owner=" + owner
-                + ", startDate=" + startDate + ", endDate=" + endDate + ", members=" + members + "]";
-    }
+   
 }

@@ -1,19 +1,11 @@
 package com.bugforge.BugForge.data;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -36,6 +28,10 @@ public class Users {
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@NotBlank
 	String password;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<ProjectMembership> memberships = new ArrayList<>();
+
 	
 	public Users() {}
 	
