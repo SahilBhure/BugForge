@@ -103,6 +103,7 @@
 	</dependencies>
 
 	<build>
+	<finalName>BugForge</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

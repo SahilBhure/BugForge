@@ -25,7 +25,7 @@ public class NotificationService {
      * This task runs daily at 8:00 AM IST.
      * It finds all users and sends them a reminder email.
      */
-    @Scheduled(cron = "0 19 15 * * *", zone = "Asia/Kolkata")
+    @Scheduled(cron = "0 27 15 * * *", zone = "Asia/Kolkata")
     public void sendDailyReminders() {
         log.info("Starting daily reminder email job...");
 
