@@ -11,8 +11,6 @@ BugForge is a lightweight issue and project management system inspired by Jira. 
 - 🗂️ Project Management (Create, update, assign members)
 - 📋 Task Management (Independent of project, but assignable)
 - 🧾 RESTful APIs for all entities
-- 📦 Modular architecture with DTOs and service layers
-- 📊 Admin/User/Project Owner permissions
 
 ---
 
@@ -32,7 +30,6 @@ BugForge is a lightweight issue and project management system inspired by Jira. 
 com.bugforge.BugForge
 │
 ├── controller        # REST Controllers
-├── dto               # Data Transfer Objects
 ├── entity            # JPA Entities (User, Project, Task, etc.)
 ├── exception         # Custom exception classes
 ├── repository        # Spring Data JPA Repositories
@@ -50,7 +47,7 @@ com.bugforge.BugForge
 - Java 17+
 - Maven
 - MySQL or any relational DB
-- IDE (IntelliJ / VS Code)
+- IDE (Eclipse / VS Code)
 - Postman or similar API testing tool
 
 ---
