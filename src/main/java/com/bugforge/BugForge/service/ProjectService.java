@@ -30,7 +30,7 @@ public class ProjectService{
 	public List<Project> retrieveAllUserProjects() {
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String username = authentication.getName();
-	    return projectRepository.findAllByOwnerUsername(username);
+	    return projectRepository.findAllByOwner_mail(username);
 	}
 	
 	

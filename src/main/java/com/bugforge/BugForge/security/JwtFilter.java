@@ -13,8 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.bugforge.BugForge.service.CustomUserDetailsService;
 import com.bugforge.BugForge.service.JwtService;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -57,4 +56,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+
+
 }

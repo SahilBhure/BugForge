@@ -29,7 +29,7 @@ public class ProjectController {
 
 	
 	@GetMapping("/user/projects")
-	@PreAuthorize("hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('ADMIN')")
 	public List<Project> retrieveAllUserProjects(){
 		return projectService.retrieveAllUserProjects();
 	}
