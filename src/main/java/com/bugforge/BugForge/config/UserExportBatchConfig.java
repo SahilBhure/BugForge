@@ -30,7 +30,6 @@ public class UserExportBatchConfig {
         this.dataSource = dataSource;
     }
 
-    // ✅ Reader: reads Users from DB
     @Bean
     public JdbcCursorItemReader<Users> reader() {
         JdbcCursorItemReader<Users> reader = new JdbcCursorItemReader<>();
@@ -47,13 +46,11 @@ public class UserExportBatchConfig {
         return reader;
     }
 
-    // ✅ Writer: writes Users to CSV
     @Bean
     public FlatFileItemWriter<Users> writer() {
         FlatFileItemWriter<Users> writer = new FlatFileItemWriter<>();
         writer.setResource(new FileSystemResource("output/users.csv"));
 
-        // ✅ Add header row
         writer.setHeaderCallback(writer1 -> writer1.write("id,username,mail"));
 
         DelimitedLineAggregator<Users> lineAggregator = new DelimitedLineAggregator<>();
@@ -61,7 +58,6 @@ public class UserExportBatchConfig {
 
         BeanWrapperFieldExtractor<Users> fieldExtractor = new BeanWrapperFieldExtractor<>();
         fieldExtractor.setNames(new String[]{"id", "username", "mail"});
-        // ⚠️ excluding password for security reasons
         lineAggregator.setFieldExtractor(fieldExtractor);
 
         writer.setLineAggregator(lineAggregator);
@@ -69,7 +65,6 @@ public class UserExportBatchConfig {
     }
 
 
-    // ✅ Step
     @Bean
     public Step exportStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("exportStep", jobRepository)
@@ -79,7 +74,6 @@ public class UserExportBatchConfig {
                 .build();
     }
 
-    // ✅ Job
     @Bean
     public Job exportJob(JobRepository jobRepository, Step exportStep) {
         return new JobBuilder("exportJob", jobRepository)
@@ -91,8 +85,6 @@ public class UserExportBatchConfig {
     public CommandLineRunner runExportJob(JobLauncher jobLauncher, Job exportJob) {
         return args -> {
             System.out.println("EXECUTING BATCH JOB ON STARTUP");
-            // Spring Batch requires unique parameters for each job run.
-            // Using the current time is a common way to ensure uniqueness.
             JobParameters jobParameters = new JobParametersBuilder()
                     .addLong("startAt", System.currentTimeMillis())
                     .toJobParameters();

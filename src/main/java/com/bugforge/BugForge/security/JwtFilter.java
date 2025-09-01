@@ -22,8 +22,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtService jwtService;
-    
-    // ✅ FIX: Inject the service directly
+
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
@@ -41,8 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            
-            // ✅ FIX: Use the directly injected service
+
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
 
             if (jwtService.isTokenValid(token, userDetails)) {
