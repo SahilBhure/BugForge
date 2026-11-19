@@ -1,0 +1,68 @@
+services:
+  # ── MySQL Database ──────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: bugforge-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: bugforge
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - bugforge-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # ── Spring Boot Backend API ─────────────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bugforge-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: bugforge
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      JWT_SECRET: a-string-secret-at-least-256-bits-long
+    ports:
+      - "8080:8080"
+    networks:
+      - bugforge-network
+
+  # ── React + Vite Frontend (Nginx) ───────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:8080
+    container_name: bugforge-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+      - "80:80"
+    networks:
+      - bugforge-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  bugforge-network:
+    driver: bridge
