@@ -8,7 +8,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.bugforge.BugForge.data.Project;
+import com.bugforge.BugForge.data.ProjectMembership;
 import com.bugforge.BugForge.data.ProjectRepository;
+import com.bugforge.BugForge.data.ProjectRole;
+import com.bugforge.BugForge.data.Users;
 import com.bugforge.BugForge.data.UsersRepository;
 
 @Service
@@ -29,8 +32,8 @@ public class ProjectService{
 	
 	public List<Project> retrieveAllUserProjects() {
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String username = authentication.getName();
-	    return projectRepository.findAllByOwner_mail(username);
+	    String email = authentication.getName();
+	    return projectRepository.findAllUserProjects(email);
 	}
 	
 	
@@ -42,10 +45,15 @@ public class ProjectService{
 	
 	public void addProject(Project project) {
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String username = authentication.getName();
+	    String email = authentication.getName();
 
-	    project.setOwner(userRepository.findByUsername(username)
-	        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username)));
+	    Users owner = userRepository.findByMail(email)
+	        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+
+	    project.setOwner(owner);
+
+	    ProjectMembership membership = new ProjectMembership(owner, project, ProjectRole.ADMIN);
+	    project.getMemberships().add(membership);
 
 	    projectRepository.save(project);
 	}

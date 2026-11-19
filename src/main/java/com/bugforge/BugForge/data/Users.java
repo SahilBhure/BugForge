@@ -2,6 +2,7 @@ package com.bugforge.BugForge.data;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -29,6 +30,7 @@ public class Users {
 	@NotBlank
 	String password;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<ProjectMembership> memberships = new ArrayList<>();
 

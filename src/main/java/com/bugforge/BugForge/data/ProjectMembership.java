@@ -1,5 +1,7 @@
 package com.bugforge.BugForge.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +17,7 @@ public class ProjectMembership {
 
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @JsonIgnore
     private Project project;
 
     @Enumerated(EnumType.STRING)

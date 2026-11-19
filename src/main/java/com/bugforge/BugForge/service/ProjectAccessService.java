@@ -14,6 +14,9 @@ public class ProjectAccessService {
     private ProjectMembershipRepository membershipRepo;
 
 	public boolean hasRole(Users user, Project project, ProjectRole... allowedRoles) {
+	    if (project != null && project.getOwner() != null && user != null && project.getOwner().getId() == user.getId()) {
+	        return true;
+	    }
 	    return membershipRepo.findByUserAndProject(user, project)
 	        .filter(membership -> Arrays.asList(allowedRoles).contains(membership.getRole()))
 	        .isPresent();
@@ -21,6 +24,9 @@ public class ProjectAccessService {
 
 
     public ProjectRole getUserRole(Users user, Project project) {
+        if (project != null && project.getOwner() != null && user != null && project.getOwner().getId() == user.getId()) {
+            return ProjectRole.ADMIN;
+        }
         return membershipRepo.findByUserAndProject(user, project)
             .map(ProjectMembership::getRole)
             .orElse(null);

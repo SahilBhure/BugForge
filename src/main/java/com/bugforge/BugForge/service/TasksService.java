@@ -53,12 +53,22 @@ public class TasksService {
             return ResponseEntity.badRequest().body("Project is required");
         }
 
-        if (!accessService.hasRole(user, project, ProjectRole.ADMIN, ProjectRole.MANAGER, ProjectRole.DEVELOPER)) {
+        if (!accessService.hasRole(user, project, ProjectRole.ADMIN, ProjectRole.MANAGER, ProjectRole.DEVELOPER, ProjectRole.TESTER)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Insufficient permissions");
         }
 
-        tasksRepository.save(task);
-        return ResponseEntity.ok("Task created");
+        if (task.getReporter() == null) {
+            task.setReporter(user);
+        }
+
+        if (task.getAssignee() != null && task.getAssignee().getId() != 0) {
+            task.setAssignee(userService.getById(task.getAssignee().getId()));
+        } else {
+            task.setAssignee(null);
+        }
+
+        Tasks saved = tasksRepository.save(task);
+        return ResponseEntity.ok(saved);
     }
 
     public ResponseEntity<?> updateTask(int id, Tasks updatedTask, Principal principal) {
@@ -71,7 +81,7 @@ public class TasksService {
         Users user = userService.getByMail(principal.getName());
         Project project = existing.getProject();
 
-        if (!accessService.hasRole(user, project, ProjectRole.ADMIN, ProjectRole.MANAGER, ProjectRole.DEVELOPER)) {
+        if (!accessService.hasRole(user, project, ProjectRole.ADMIN, ProjectRole.MANAGER, ProjectRole.DEVELOPER, ProjectRole.TESTER)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Insufficient permissions");
         }
 
@@ -79,9 +89,9 @@ public class TasksService {
         updatedTask.setProject(existing.getProject());
 
         updateTaskFields(existing, updatedTask);
-        tasksRepository.save(existing);
+        Tasks saved = tasksRepository.save(existing);
 
-        return ResponseEntity.ok("Task updated");
+        return ResponseEntity.ok(saved);
     }
 
     public ResponseEntity<?> deleteTask(int id, Principal principal) {
@@ -108,8 +118,14 @@ public class TasksService {
         existing.setStatus(updated.getStatus());
         existing.setDescription(updated.getDescription());
         existing.setPriority(updated.getPriority());
-        existing.setAssignee(updated.getAssignee());
-        existing.setReporter(updated.getReporter());
+        if (updated.getAssignee() != null && updated.getAssignee().getId() != 0) {
+            existing.setAssignee(userService.getById(updated.getAssignee().getId()));
+        } else {
+            existing.setAssignee(null);
+        }
+        if (updated.getReporter() != null && updated.getReporter().getId() != 0) {
+            existing.setReporter(userService.getById(updated.getReporter().getId()));
+        }
     }
 
 

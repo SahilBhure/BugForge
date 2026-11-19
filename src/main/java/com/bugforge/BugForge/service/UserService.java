@@ -64,6 +64,10 @@ public class UserService{
 	        .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + mail));
 	}
 
+	public Users getById(Integer id) {
+	    return usersRepository.findById(id).orElse(null);
+	}
+
 	
 	public void addAUser(@Valid Users users) {
 	    String hashedPassword = passwordEncoder.encode(users.getPassword());
